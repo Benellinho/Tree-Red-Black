@@ -1,4 +1,4 @@
-Árvore Red-Black em C
+Tree-Red-Black em C
 
 Implementação acadêmica de uma Árvore Red-Black (Red-Black Tree) em linguagem C, desenvolvida como trabalho em grupo para estudo de estruturas de dados balanceadas.
 
