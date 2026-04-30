@@ -18,71 +18,71 @@ typedef struct No
 typedef struct TreeRedBlack
 {
     No *raiz;
-} TreeRedBlack;
+} arvore;
 
 /**
  * Função interna para trocar a cor de um nó.
  *
- * Dados esperados: nó da árvore.
+ * Dados esperados: ponteiro para o nó da árvore.
  * O que faz: altera a cor do nó.
  */
-void troca_cor_no(No no);
+void troca_cor_no(No *no);
 
 /**
  * Função interna para rotação à direita.
  *
- * Dados esperados: nó da árvore.
+ * Dados esperados: ponteiro para o nó da árvore.
  * O que faz: realiza a rotação à direita durante o balanceamento.
  */
-void rotação_direita(No no);
+void rotação_direita(No *no);
 
 /**
  * Função interna para rotação à esquerda.
  *
- * Dados esperados: nó da árvore.
+ * Dados esperados: ponteiro para o nó da árvore.
  * O que faz: realiza a rotação à esquerda durante o balanceamento.
  */
-void rotação_esquerda(No no);
+void rotação_esquerda(No *no);
 
 /**
  * Validação das cores de cada nó.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: verifica se todos os nós têm uma cor definida.
  */
-bool verifica_cor(TreeRedBlack arvore);
+bool verifica_cor(arvore *arvore);
 
 /**
  * Validação da cor da raiz.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: verifica se a raiz é preta.
  */
-bool verifica_raiz(TreeRedBlack arvore);
+bool verifica_raiz_preta(arvore *arvore);
 
 /**
  * Validação da cor dos nós nulos.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: verifica se todos os nós nulos são pretos.
  */
-bool verifica_nos_null(TreeRedBlack arvore);
+bool verifica_nos_null(arvore *arvore);
 
 /**
  * Validação de nós vermelhos consecutivos.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: verifica se um nó vermelho não possui filho vermelho.
  */
-bool verifica_filho_vermelho_vermelho(TreeRedBlack arvore);
+bool verifica_filho_vermelho_vermelho(arvore *arvore);
 
 /**
  * Validação dos caminhos até as folhas.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: verifica se todos os caminhos de um nó até suas folhas nulas possuem o mesmo número de nós pretos.
  */
-bool verifica_caminho_folhas(TreeRedBlack arvore);
+bool verifica_caminho_folhas(arvore *arvore);
 
 /**
  * Função usada na main para integração com o usuário.
@@ -95,65 +95,65 @@ int leitor(char *dados);
 /**
  * Função para inserir um nó na árvore.
  *
- * Dados esperados: árvore e valor do nó para inserção.
+ * Dados esperados: ponteiro para a árvore e valor do nó para inserção.
  * O que faz: aloca os dados do novo nó, insere na árvore e chama o balanceamento.
  */
-int insere_no(TreeRedBlack arvore, int valor);
+int insere_no(arvore *arvore, int valor);
 
 /**
  * Função para remover um nó da árvore.
  *
- * Dados esperados: árvore e valor do nó para remoção.
+ * Dados esperados: ponteiro para a árvore e valor do nó para remoção.
  * O que faz: remove os dados do nó, libera a memória e chama o balanceamento.
  */
-int remove_no(TreeRedBlack arvore, int valor);
+int remove_no(arvore *arvore, int valor);
 
 /**
  * Função para buscar um valor na árvore.
  *
- * Dados esperados: árvore e valor buscado.
+ * Dados esperados: ponteiro para a árvore e valor buscado.
  * O que faz: busca o valor na árvore e indica se foi encontrado ou não.
  */
-int busca_no(TreeRedBlack arvore, int valor);
+int busca_no(arvore *arvore, int valor);
 
 /**
  * Função para imprimir a árvore em ordem da altura.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: imprime a árvore em sequência de níveis.
  */
-int imprime_tree_red_black(TreeRedBlack arvore);
+int imprime_tree_red_black(arvore *arvore);
 
 /**
  * Função para imprimir a árvore em ordem crescente.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: imprime a árvore em sequência crescente.
  */
-int ordem_tree_red_black(TreeRedBlack arvore);
+int ordem_tree_red_black(arvore *arvore);
 
 /**
  * Função para exibir percurso em pré-ordem.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: percorre a árvore da raiz em sentido da esquerda para a direita.
  */
-int pre_ordem_tree_red_black(TreeRedBlack arvore);
+int pre_ordem_tree_red_black(arvore *arvore);
 
 /**
  * Função para validar critérios da árvore Red-Black.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: chama as funções para verificar se as propriedades da árvore estão sendo respeitadas.
  */
-bool validar_tree_red_black(TreeRedBlack arvore);
+bool validar_tree_red_black(arvore *arvore);
 
 /**
  * Função para finalizar a árvore Red-Black.
  *
- * Dados esperados: árvore.
+ * Dados esperados: ponteiro para a árvore.
  * O que faz: libera os nós da memória, libera a árvore e finaliza o programa.
  */
-void Finalizar(TreeRedBlack arvore);
+void Finalizar(arvore *arvore);
 
 #endif
