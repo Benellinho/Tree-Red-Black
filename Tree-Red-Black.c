@@ -38,12 +38,21 @@ No *aloca_no(int valor)
     return novo;
 }
 
-void libera_no(No *no)
-{
+void libera_no(No *no) {
+    if(no == NULL) return;
+
+    libera_no(no->esquerda);
+    libera_no(no->direita);
+
+    free(no);
 }
 
 void libera_arvore(Arvore *arvore)
 {
+    if(arvore == NULL) return;
+    libera_no(arvore->raiz);
+
+    arvore->raiz = NULL;
 }
 
 // Pronta
@@ -74,7 +83,7 @@ bool verifica_cor_arvore(Arvore *arvore)
 
 bool verifica_raiz_preta(Arvore *arvore)
 {
-    if (arvore->raiz->cor == "P")
+    if (arvore->raiz->cor == "B")
     {
         return true;
     }
@@ -112,9 +121,30 @@ int remove_no(Arvore *arvore, int valor)
     return 0;
 }
 
-int busca_no(Arvore *arvore, int valor)
-{
-    return 0;
+// Auxiliar para função de busca
+static bool busca_aux(No *no, int valor) {
+    if(no == NULL) return false;
+
+    if(no->valor == valor) return true;
+
+    if(valor < no->valor) {
+        return busca_aux(no->esquerda, valor);
+    }
+
+    return busca_aux(no->direita, valor);
+}
+
+void busca_no(Arvore *arvore, int valor) {
+    if(arvore == NULL || arvore->raiz == NULL) {
+        printf("Valor nao encontrado\n");
+        return;
+    } 
+
+    if(busca_aux(arvore->raiz, valor)) {
+        printf("Valor encontrado\n");
+    } else {
+        printf("Valor nao encontrado\n");
+    }
 }
 
 int imprime_tree_red_black(Arvore *arvore)
@@ -132,11 +162,26 @@ int pre_ordem_tree_red_black(Arvore *arvore)
     return 0;
 }
 
-bool validar_tree_red_black(Arvore *arvore)
-{
-    return false;
+void validar_tree_red_black(Arvore *arvore) {
+    if(arvore == NULL) {
+        printf("Arvore invalida\n");
+        return;
+    }
+
+    // A árvore deve ter raiz preta, não deve ter nós consecutivos vermelhos e deve ter o mesmo número de nós pretos até as folhas
+    // em todos os caminhos
+    if(!verifica_raiz_preta(arvore) || !verifica_filho_vermelho_vermelho(arvore) || !verifica_caminho_folhas(arvore)) {
+        printf("Arvore invalida\n");
+        return;
+    } 
+
+    printf("Arvore valida\n");
 }
 
-void Finalizar(Arvore *arvore)
-{
+
+void Finalizar(Arvore *arvore) {
+    if(arvore == NULL) return;
+    libera_arvore(arvore);
+    free(arvore);
+    exit(0);
 }
