@@ -37,21 +37,28 @@ No *aloca_no(int valor)
     return novo;
 }
 
-void libera_no(No *no) {
-    if(no == NULL) return;
+void libera_no(No *no)
+{
+    if (no == NULL)
+        return;
+    free(no);
+}
 
-    libera_no(no->esquerda);
-    libera_no(no->direita);
-
+void libera_todos_nos(No *no)
+{
+    if (no == NULL)
+        return;
+    libera_todos_nos(no->esquerda);
+    libera_todos_nos(no->direita);
     free(no);
 }
 
 void libera_arvore(Arvore *arv)
 {
-    if(arv == NULL) return;
-    libera_no(arv->raiz);
-
-    arv->raiz = NULL;
+    if (arv == NULL)
+        return;
+    libera_todos_nos(arv->raiz);
+    free(arv)
 }
 
 void definir_cor_no(No *no, char cor)
@@ -193,6 +200,34 @@ void remove_no(Arvore *arv, int valor)
     return 0;
 }
 
+// Auxiliar para função de busca
+static No *busca_aux(No *no, int valor)
+{
+    if (no == NULL)
+        return NULL;
+
+    if (no->valor == valor)
+        return no;
+
+    if (valor < no->valor)
+    {
+        return busca_aux(no->esquerda, valor);
+    }
+
+    return busca_aux(no->direita, valor);
+}
+
+No *busca_no(Arvore *arvore, int valor)
+{
+    if (arvore == NULL || arvore->raiz == NULL)
+    {
+        return NULL;
+    }
+
+    return busca_aux(arvore->raiz, valor);
+}
+
+/* Função não recursiva para busca
 No *busca_no(Arvore *arv, int valor)
 {
     No *pai = arv->raiz;
@@ -212,32 +247,11 @@ No *busca_no(Arvore *arv, int valor)
         }
     }
     return NULL;
-}
+}*/
 
 void imprime_tree_red_black(Arvore *arv)
 {
     return 0;
-}
-
-// Auxiliar para função de busca
-static No *busca_aux(No *no, int valor) {
-    if(no == NULL) return NULL;
-
-    if(no->valor == valor) return no;
-
-    if(valor < no->valor) {
-        return busca_aux(no->esquerda, valor);
-    }
-
-    return busca_aux(no->direita, valor);
-}
-
-No *busca_no(Arvore *arvore, int valor) {
-    if(arvore == NULL || arvore->raiz == NULL) {
-        return NULL;
-    } 
-
-    return busca_aux(arvore->raiz, valor);
 }
 
 void pre_ordem_tree_red_black(Arvore *arv)
@@ -255,23 +269,27 @@ int pre_ordem_tree_red_black(Arvore *arvore)
     return 0;
 }
 
-bool validar_tree_red_black(Arvore *arvore) {
-    if(arvore == NULL) {
+bool validar_tree_red_black(Arvore *arvore)
+{
+    if (arvore == NULL)
+    {
         return false;
     }
 
     // A árvore deve ter raiz preta, não deve ter nós consecutivos vermelhos e deve ter o mesmo número de nós pretos até as folhas
     // em todos os caminhos
-    if(!verifica_raiz_preta(arvore) || !verifica_filho_vermelho_vermelho(arvore) || !verifica_caminho_folhas(arvore)) {
+    if (!verifica_raiz_preta(arvore) || !verifica_filho_vermelho_vermelho(arvore) || !verifica_caminho_folhas(arvore))
+    {
         return false;
-    } 
+    }
 
     return true;
 }
 
-
-void Finalizar(Arvore *arvore) {
-    if(arvore == NULL) return;
+void Finalizar(Arvore *arvore)
+{
+    if (arvore == NULL)
+        return;
     libera_arvore(arvore);
     free(arvore);
     exit(0);
