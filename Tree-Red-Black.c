@@ -54,10 +54,12 @@ Arvore *aloca_arvore()
 
 void libera_no(No *no)
 {
+    free(no);
 }
 
 void libera_arvore(Arvore *arv)
 {
+    free(arv);
 }
 
 void definir_cor_no(No *no, char cor)
@@ -109,20 +111,20 @@ void inserir_no_comum(Arvore *arv, No *no)
     no->pai = pai;
 }
 
-void corrigir_insercao(Arvore *arv, No *novo)
+void definir_caso(No *no)
 {
 }
 
 // Funções auxiliares gerais
 
-int arvore_altura(No *pai)
+int arvore_altura(No *no)
 {
-    if (pai->direita == NULL && pai->esquerda == NULL)
+    if (no->direita == NULL && no->esquerda == NULL)
     {
         return 1;
     }
-    int altura_direita = arvore_altura(pai->direita);
-    int altura_esquerda = arvore_altura(pai->esquerda);
+    int altura_direita = arvore_altura(no->direita);
+    int altura_esquerda = arvore_altura(no->esquerda);
     if (altura_direita >= altura_esquerda)
     {
         return altura_direita;
@@ -201,7 +203,23 @@ void remove_no(Arvore *arv, int valor)
 
 No *busca_no(Arvore *arv, int valor)
 {
-    return;
+    No *pai = arv->raiz;
+    while (pai != NULL)
+    {
+        if (pai == valor)
+        {
+            return pai;
+        }
+        else if (pai > valor)
+        {
+            pai = pai->esquerda;
+        }
+        else
+        {
+            pai = pai->direita;
+        }
+    }
+    return NULL;
 }
 
 void imprime_tree_red_black(Arvore *arv)
