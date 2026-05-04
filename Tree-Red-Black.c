@@ -58,7 +58,7 @@ void libera_arvore(Arvore *arv)
     if (arv == NULL)
         return;
     libera_todos_nos(arv->raiz);
-    free(arv)
+    free(arv);
 }
 
 void definir_cor_no(No *no, char cor)
