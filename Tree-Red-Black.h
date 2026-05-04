@@ -29,7 +29,15 @@ typedef struct TreeRedBlack
  * Dados esperados: Valor do nó.
  * O que faz: cria o no aloca ele é ajusta os parâmetros e valores.
  */
-No aloca_no(int valor);
+No *aloca_no(int valor);
+
+/**
+ * Função interna para alocação de memoria da árvore
+ *
+ * Dados esperados: nenhum.
+ * O que faz: cria a árvore, aloca ela e ajusta seus parâmetros iniciais.
+ */
+Arvore *aloca_arvore();
 
 /**
  * Função interna para liberação de memoria do no
@@ -48,28 +56,70 @@ void libera_no(No *no);
 void libera_arvore(Arvore *arvore);
 
 /**
- * Função interna para trocar a cor de um nó.
+ * Função interna para definir a cor de um nó.
  *
- * Dados esperados: ponteiro para o nó da árvore.
- * O que faz: altera a cor do nó.
+ * Dados esperados: ponteiro para o nó da árvore e cor que será definida.
+ * O que faz: altera a cor do nó para B de black ou R de red.
  */
-void troca_cor_no(No *no);
+void definir_cor_no(No *no, char cor);
+
+// Funções de inserção
+/**
+ * Função interna para inserir o primeiro nó como raiz.
+ *
+ * Dados esperados: ponteiro para a árvore e ponteiro para o nó.
+ * O que faz: define o nó como raiz da árvore e ajusta sua cor para preta.
+ */
+void inserir_raiz(Arvore *arvore, No *no);
+
+/**
+ * Função interna para verificar se um valor já existe na árvore.
+ *
+ * Dados esperados: ponteiro para a árvore e valor buscado.
+ * O que faz: chama a busca do nó e retorna se o valor já está presente.
+ */
+bool verifica_no_existente(Arvore *arvore, int valor);
+
+/**
+ * Função interna para inserir um nó seguindo as regras de árvore binária.
+ *
+ * Dados esperados: ponteiro para a árvore e ponteiro para o nó.
+ * O que faz: posiciona o nó na esquerda ou direita de acordo com seu valor.
+ */
+void inserir_no_comum(Arvore *arvore, No *no);
+
+/**
+ * Função interna para corrigir a árvore após a inserção.
+ *
+ * Dados esperados: ponteiro para a árvore e ponteiro para o novo nó.
+ * O que faz: realiza os ajustes de cores e rotações necessários após inserir.
+ */
+void corrigir_insercao(Arvore *arvore, No *novo);
+
+// Funções auxiliares gerais
+/**
+ * Função interna para calcular a altura da árvore.
+ *
+ * Dados esperados: ponteiro para o nó pai.
+ * O que faz: percorre os filhos do nó e retorna a altura encontrada.
+ */
+int arvore_altura(No *pai);
 
 /**
  * Função interna para rotação à direita.
  *
- * Dados esperados: ponteiro para o nó da árvore.
+ * Dados esperados: ponteiro para a árvore e ponteiro para o nó da árvore.
  * O que faz: realiza a rotação à direita durante o balanceamento.
  */
-void rotação_direita(No *no);
+void rotacao_direita(Arvore *arvore, No *no);
 
 /**
  * Função interna para rotação à esquerda.
  *
- * Dados esperados: ponteiro para o nó da árvore.
+ * Dados esperados: ponteiro para a árvore e ponteiro para o nó da árvore.
  * O que faz: realiza a rotação à esquerda durante o balanceamento.
  */
-void rotação_esquerda(No *no);
+void rotacao_esquerda(Arvore *arvore, No *no);
 
 /**
  * Validação das cores de cada nó.
@@ -77,7 +127,7 @@ void rotação_esquerda(No *no);
  * Dados esperados: ponteiro para a árvore.
  * O que faz: verifica se todos os nós têm uma cor definida.
  */
-bool verifica_cor(Arvore *arvore);
+bool verifica_cor_arvore(Arvore *arvore);
 
 /**
  * Validação da cor da raiz.
@@ -119,7 +169,7 @@ bool verifica_caminho_folhas(Arvore *arvore);
  * Dados esperados: ponteiro para a árvore e valor do nó para inserção.
  * O que faz: aloca os dados do novo nó, insere na árvore e chama o balanceamento.
  */
-void insere_no(Arvore *arvore, int valor);
+void inserir_no(Arvore *arvore, int valor);
 
 /**
  * Função para remover um nó da árvore.
@@ -135,7 +185,7 @@ void remove_no(Arvore *arvore, int valor);
  * Dados esperados: ponteiro para a árvore e valor buscado.
  * O que faz: busca o valor na árvore e indica se foi encontrado ou não.
  */
-void busca_no(Arvore *arvore, int valor);
+No *busca_no(Arvore *arvore, int valor);
 
 /**
  * Função para imprimir a árvore em ordem da altura.
@@ -167,7 +217,7 @@ void pre_ordem_tree_red_black(Arvore *arvore);
  * Dados esperados: ponteiro para a árvore.
  * O que faz: chama as funções para verificar se as propriedades da árvore estão sendo respeitadas.
  */
-void validar_tree_red_black(Arvore *arvore);
+bool validar_tree_red_black(Arvore *arvore);
 
 /**
  * Função para finalizar a árvore Red-Black.
@@ -175,7 +225,7 @@ void validar_tree_red_black(Arvore *arvore);
  * Dados esperados: ponteiro para a árvore.
  * O que faz: libera os nós da memória, libera a árvore e finaliza o programa.
  */
-void Finalizar(Arvore *arvore);
+void finalizar(Arvore *arvore);
 
 /**
  * Função usada na main para integração com o usuário.
