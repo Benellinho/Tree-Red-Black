@@ -141,7 +141,7 @@ void corrigir_insercao(Arvore *arvore, No *novo){
             }
         }
         else{
-            // de forma ánaloga para o outro lado
+            // de forma análoga para o outro lado
             No *tio = avo->esquerda;
 
             if (tio != NULL && tio->cor == 'R'){
