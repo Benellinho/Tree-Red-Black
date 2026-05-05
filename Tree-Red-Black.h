@@ -96,6 +96,14 @@ void inserir_no_comum(Arvore *arvore, No *no);
  */
 void corrigir_insercao(Arvore *arvore, No *novo);
 
+/**
+ * Função interna para corrigir a árvore após a remoção.
+ *
+ * Dados esperados: ponteiro para a árvore e ponteiro para o nó removido.
+ * O que faz: realiza os ajustes de cores e rotações necessários após remover.
+ */
+void corrigir_remocao(Arvore *arv, No *no_removido);
+
 // Funções auxiliares gerais
 /**
  * Função interna para calcular a altura da árvore.
