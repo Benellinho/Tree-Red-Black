@@ -110,8 +110,59 @@ void inserir_no_comum(Arvore *arv, No *no)
     no->pai = pai;
 }
 
-void definir_caso(No *no)
-{
+void corrigir_insercao(Arvore *arvore, No *novo){
+    // enquanto tiver pais vermelhos, tem que corrigir
+     while (novo->pai != NULL && novo->pai->cor == 'R'){
+
+        No * avo = novo->pai->pai;
+
+        if (novo->pai == avo->esquerda){
+            No *tio = avo->direita;
+
+            // Caso 1: tio vermelho
+            if (tio != NULL && tio->cor == 'R'){
+                novo->pai->cor = 'B';
+                tio->cor = 'B';
+                avo->cor = 'R';
+                novo = avo;
+            }
+            else{
+                // Caso 2: triângulo
+                if (novo == novo->pai->direita){
+                    novo = novo->pai;
+                    rotacao_esquerda(arvore, novo);
+                }
+
+                // Caso 3: linha
+                novo->pai->cor = 'B';
+                avo->cor = 'R';
+                rotacao_direita(arvore, avo);
+            }
+        }
+        else{
+            // de forma análoga para o outro lado
+            No *tio = avo->esquerda;
+
+            if (tio != NULL && tio->cor == 'R'){
+                novo->pai->cor = 'B';
+                tio->cor = 'B';
+                avo->cor = 'R';
+                novo = avo;
+            }
+            else{
+                if (novo == novo->pai->esquerda){
+                    novo = novo->pai;
+                    rotacao_direita(arvore, novo);
+                }
+
+                novo->pai->cor = 'B';
+                avo->cor = 'R';
+                rotacao_esquerda(arvore, avo);
+            }
+        }
+    }
+
+    arvore->raiz->cor = 'B';
 }
 
 // Funções auxiliares gerais
