@@ -242,6 +242,6 @@ void finalizar(Arvore *arvore);
  * O que faz: Toda a interação do usuário com o código é aqui chama a função correspondente
  * ao código inserido e passa os parâmetros, se tiver.
  */
-int leitor(char *dados);
+int leitor(Arvore *arvore, char *dados);
 
 #endif
