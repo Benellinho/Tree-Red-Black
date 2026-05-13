@@ -263,6 +263,7 @@ void rotacao_esquerda(Arvore *arv, No *no)
     no->pai = no_dir;
 }
 
+// Funções auxiliares verificação das regras
 static bool verifica_cor_aux(No *no)
 {
     // auxiliar para verificar se a cor de cada nó é válida
@@ -343,8 +344,8 @@ static void imprime_pre_ordem_arv_aux(No *no)
         return;
     }
     printf("%d(%c)", no->valor, no->cor);
-    imprime_ordem_arv_aux(no->esquerda);
-    imprime_ordem_arv_aux(no->direita);
+    imprime_pre_ordem_arv_aux(no->esquerda);
+    imprime_pre_ordem_arv_aux(no->direita);
 }
 
 // Funções auxiliares para o leitor;
@@ -356,7 +357,7 @@ int string_para_numero(char *dados)
 
 int leitor(Arvore *arv, char *dados)
 {
-    char comando = dados[0];
+    char comando = toupper(dados[0]);
     int valor;
     switch (comando)
     {
@@ -544,28 +545,6 @@ No *busca_no(Arvore *arvore, int valor)
 
     return busca_aux(arvore->raiz, valor);
 }
-
-/* Função não recursiva para busca
-No *busca_no(Arvore *arv, int valor)
-{
-    No *pai = arv->raiz;
-    while (pai != NULL)
-    {
-        if (pai == valor)
-        {
-            return pai;
-        }
-        else if (pai > valor)
-        {
-            pai = pai->esquerda;
-        }
-        else
-        {
-            pai = pai->direita;
-        }
-    }
-    return NULL;
-}*/
 
 void imprime_tree_red_black(Arvore *arv)
 {

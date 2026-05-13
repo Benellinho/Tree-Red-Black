@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 typedef struct No
 {
@@ -244,4 +245,4 @@ void finalizar(Arvore *arvore);
  */
 int leitor(Arvore *arvore, char *dados);
 
-#endif
+#endif TREE_RED_BLACK_H
