@@ -451,7 +451,7 @@ void corrigir_remocao(Arvore *arv, No *no_removido)
             }
             else
             {
-                // Caso 3: filho direito preto
+                // Caso 3: filho interno vermelho
                 if (irmao->direita == NULL || irmao->direita->cor == 'B')
                 {
                     if (irmao->esquerda != NULL)
@@ -462,7 +462,7 @@ void corrigir_remocao(Arvore *arv, No *no_removido)
                     irmao = no_removido->pai->direita;
                 }
 
-                // Caso 4: filho direito vermelho
+                // Caso 4: filho externo vermelho
                 irmao->cor = no_removido->pai->cor;
                 no_removido->pai->cor = 'B';
 
