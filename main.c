@@ -15,7 +15,5 @@ int main(void)
         leitor(arvore, dados);
     }
 
-    libera_arvore(arvore);
-
     return 0;
 }

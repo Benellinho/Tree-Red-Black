@@ -1,4 +1,41 @@
-#include "Tree-Red-Black.h"
+﻿#include "Tree-Red-Black.h"
+
+// Funcoes auxiliares internas.
+static No *aloca_no(int valor);
+static void libera_no(No *no);
+static void libera_todos_nos(No *no);
+static void definir_cor_no(No *no, char cor);
+
+static void inserir_raiz(Arvore *arv, No *no);
+static bool verifica_no_existente(Arvore *arv, int valor);
+static void inserir_no_comum(Arvore *arv, No *no);
+static void corrigir_insercao(Arvore *arvore, No *novo);
+
+static No *busca_substituto(No *no);
+static int contar_filhos(No *no);
+static void tipo_ligacao_pai(char *destino, No *no);
+static void remover_ponteiros_para_pai(Arvore *arv, No *removido);
+static void substitui_nos(Arvore *arv, No *removido, No *novo);
+static void redireciona_filhos_substituto(No *no_substituto);
+static void troca_filhos_removido_subistituido(No *removido, No *novo, bool filho_direto);
+static void corrigir_remocao(Arvore *arv, No *no_removido);
+
+static void rotacao_direita(Arvore *arv, No *no);
+static void rotacao_esquerda(Arvore *arv, No *no);
+
+static bool verifica_cor_aux(No *no);
+static bool verifica_cor_arvore(Arvore *arv);
+static bool verifica_raiz_preta(Arvore *arv);
+static bool verifica_nos_null(Arvore *arv);
+static bool verifica_filho_vermelho_vermelho(Arvore *arv);
+static bool verifica_caminho_folhas(Arvore *arv);
+
+static void imprime_nivel_arv_aux(No *no, int nivel);
+static void imprime_ordem_arv_aux(No *no);
+static void imprime_pre_ordem_arv_aux(No *no);
+
+static int string_para_numero(char *dados);
+static No *busca_aux(No *no, int valor);
 
 /*
 typedef struct No{
@@ -15,7 +52,7 @@ typedef struct arvore{
 */
 
 // Funções auxiliares memoria
-No *aloca_no(int valor)
+static No *aloca_no(int valor)
 {
     No *novo = (No *)malloc(sizeof(No));
 
@@ -48,14 +85,14 @@ Arvore *aloca_arvore()
     return arv;
 }
 
-void libera_no(No *no)
+static void libera_no(No *no)
 {
     if (no == NULL)
         return;
     free(no);
 }
 
-void libera_todos_nos(No *no)
+static void libera_todos_nos(No *no)
 {
     if (no == NULL)
         return;
@@ -72,19 +109,19 @@ void libera_arvore(Arvore *arv)
     free(arv);
 }
 
-void definir_cor_no(No *no, char cor)
+static void definir_cor_no(No *no, char cor)
 {
     no->cor = cor;
 }
 
 // Funções auxiliares inserção
-void inserir_raiz(Arvore *arv, No *no)
+static void inserir_raiz(Arvore *arv, No *no)
 {
     arv->raiz = no;
     definir_cor_no(no, 'B');
 }
 
-bool verifica_no_existente(Arvore *arv, int valor)
+static bool verifica_no_existente(Arvore *arv, int valor)
 {
     No *existe = busca_no(arv, valor);
     if (existe == NULL)
@@ -94,7 +131,7 @@ bool verifica_no_existente(Arvore *arv, int valor)
     return true;
 }
 
-void inserir_no_comum(Arvore *arv, No *no)
+static void inserir_no_comum(Arvore *arv, No *no)
 {
     No *pai = arv->raiz;
     while (true)
@@ -121,7 +158,7 @@ void inserir_no_comum(Arvore *arv, No *no)
     no->pai = pai;
 }
 
-void corrigir_insercao(Arvore *arvore, No *novo)
+static void corrigir_insercao(Arvore *arvore, No *novo)
 {
     // enquanto tiver pais vermelhos, tem que corrigir
     while (novo->pai != NULL && novo->pai->cor == 'R')
@@ -188,21 +225,144 @@ void corrigir_insercao(Arvore *arvore, No *novo)
 
 // Funções auxiliares gerais
 
-int arvore_altura(No *no)
+// Funcoes auxiliares remocao
+static No *busca_substituto(No *no)
 {
-    if (no == NULL)
-        return 0;
-
-    int altura_esq = arvore_altura(no->esquerda);
-    int altura_dir = arvore_altura(no->direita);
-
-    if (altura_esq > altura_dir)
-        return altura_esq + 1;
+    if (no->direita == NULL && no->esquerda == NULL)
+    {
+        return NULL;
+    }
+    No *sucessor;
+    if (no->direita == NULL)
+    {
+        sucessor = no->esquerda;
+    }
+    else if (no->esquerda == NULL)
+    {
+        sucessor = no->direita;
+    }
     else
-        return altura_dir + 1;
+    {
+        sucessor = no->direita;
+
+        while (sucessor->esquerda != NULL)
+        {
+            sucessor = sucessor->esquerda;
+        }
+    }
+
+    return sucessor;
 }
 
-void rotacao_direita(Arvore *arv, No *no)
+static int contar_filhos(No *no)
+{
+    int quantidade = 0;
+    if (no->esquerda != NULL)
+    {
+        quantidade++;
+    }
+    if (no->direita != NULL)
+    {
+        quantidade++;
+    }
+    return quantidade;
+}
+
+static void tipo_ligacao_pai(char *destino, No *no)
+{
+    if (no->pai == NULL)
+    {
+        strcpy(destino, "RAIZ");
+        return;
+    }
+    if (no->pai->esquerda == no)
+    {
+        strcpy(destino, "FILHO ESQUERDO");
+    }
+    else
+    {
+        strcpy(destino, "FILHO DIREITO");
+    }
+}
+
+static void remover_ponteiros_para_pai(Arvore *arv, No *removido)
+{
+    char conexao_pai_no[20];
+    tipo_ligacao_pai(conexao_pai_no, removido);
+    if (strcmp(conexao_pai_no, "RAIZ") == 0)
+    {
+        arv->raiz = NULL;
+        return;
+    }
+    No *no_pai = removido->pai;
+    if (strcmp(conexao_pai_no, "FILHO DIREITO") == 0)
+    {
+        no_pai->direita = NULL;
+    }
+    else
+    {
+        no_pai->esquerda = NULL;
+    }
+}
+
+static void substitui_nos(Arvore *arv, No *removido, No *novo)
+{
+    char conexao_pai_no[20];
+    tipo_ligacao_pai(conexao_pai_no, removido);
+    if (strcmp(conexao_pai_no, "RAIZ") == 0)
+    {
+        arv->raiz = novo;
+        if (novo != NULL)
+        {
+            novo->pai = NULL;
+        }
+        return;
+    }
+    No *no_pai = removido->pai;
+    if (strcmp(conexao_pai_no, "FILHO DIREITO") == 0)
+    {
+        no_pai->direita = novo;
+        if (novo != NULL)
+        {
+            novo->pai = no_pai;
+        }
+    }
+    else
+    {
+        no_pai->esquerda = novo;
+        if (novo != NULL)
+        {
+            novo->pai = no_pai;
+        }
+    }
+}
+
+static void redireciona_filhos_substituto(No *no_substituto)
+{
+    No *no_pai = no_substituto->pai;
+    if (contar_filhos(no_substituto) == 0)
+    {
+        no_substituto->pai->esquerda = NULL;
+    }
+    else
+    {
+        no_pai->esquerda = no_substituto->direita;
+        no_substituto->direita->pai = no_pai;
+    }
+}
+
+static void troca_filhos_removido_subistituido(No *removido, No *novo, bool filho_direto)
+{
+    if (!filho_direto)
+    {
+        novo->direita = removido->direita;
+        novo->direita->pai = novo;
+    }
+    novo->esquerda = removido->esquerda;
+    novo->esquerda->pai = novo;
+}
+
+static void rotacao_direita(Arvore *arv, No *no)
 {
     if (arv == NULL || no == NULL || no->direita == NULL)
         return;
@@ -229,7 +389,7 @@ void rotacao_direita(Arvore *arv, No *no)
     no->pai = no_esq;
 }
 
-void rotacao_esquerda(Arvore *arv, No *no)
+static void rotacao_esquerda(Arvore *arv, No *no)
 {
     if (arv == NULL || no == NULL || no->direita == NULL)
         return;
@@ -277,7 +437,7 @@ static bool verifica_cor_aux(No *no)
     return verifica_cor_aux(no->esquerda) && verifica_cor_aux(no->direita);
 }
 
-bool verifica_cor_arvore(Arvore *arv)
+static bool verifica_cor_arvore(Arvore *arv)
 {
     if (arv == NULL)
         return true;
@@ -285,7 +445,7 @@ bool verifica_cor_arvore(Arvore *arv)
     return verifica_cor_aux(arv->raiz);
 }
 
-bool verifica_raiz_preta(Arvore *arv)
+static bool verifica_raiz_preta(Arvore *arv)
 {
     if (arv->raiz->cor == 'B')
     {
@@ -294,17 +454,17 @@ bool verifica_raiz_preta(Arvore *arv)
     return false;
 }
 
-bool verifica_nos_null(Arvore *arv)
+static bool verifica_nos_null(Arvore *arv)
 {
     return false;
 }
 
-bool verifica_filho_vermelho_vermelho(Arvore *arv)
+static bool verifica_filho_vermelho_vermelho(Arvore *arv)
 {
     return false;
 }
 
-bool verifica_caminho_folhas(Arvore *arv)
+static bool verifica_caminho_folhas(Arvore *arv)
 {
     return false;
 }
@@ -350,7 +510,7 @@ static void imprime_pre_ordem_arv_aux(No *no)
 
 // Funções auxiliares para o leitor;
 
-int string_para_numero(char *dados)
+static int string_para_numero(char *dados)
 {
     return strtol(dados, NULL, 10);
 }
@@ -421,9 +581,48 @@ void inserir_no(Arvore *arv, int valor)
 void remove_no(Arvore *arv, int valor)
 {
     No *no_removido = busca_no(arv, valor);
+    No *nil = NULL;
+    if (no_removido == NULL)
+    {
+        return;
+    }
+    bool filho_direto = false;
+    No *no_substituto = busca_substituto(no_removido);
+    if (no_substituto != NULL)
+    {
+
+        filho_direto = no_substituto->pai == no_removido ? true : false;
+        if (!filho_direto)
+        {
+            redireciona_filhos_substituto(no_substituto);
+        }
+        substitui_nos(arv, no_removido, no_substituto);
+        if (contar_filhos(no_removido) == 2)
+        {
+            troca_filhos_removido_subistituido(no_removido, no_substituto, filho_direto);
+        }
+    }
+    else
+    {
+        nil = aloca_no(0);
+        definir_cor_no(nil, 'B');
+        substitui_nos(arv, no_removido, nil);
+        no_substituto = nil;
+    }
+    if (no_removido->cor == 'B')
+    {
+        corrigir_remocao(arv, no_substituto);
+    }
+    if (nil != NULL)
+    {
+        remover_ponteiros_para_pai(arv, nil);
+        libera_no(nil);
+    }
+    printf("REMOVIDO: %d\n", no_removido->valor);
+    libera_no(no_removido);
 }
 
-void corrigir_remocao(Arvore *arv, No *no_removido)
+static void corrigir_remocao(Arvore *arv, No *no_removido)
 {
     while (no_removido != arv->raiz && (no_removido == NULL || no_removido->cor == 'B'))
     {
@@ -578,7 +777,7 @@ bool validar_tree_red_black(Arvore *arv)
     return (verifica_raiz_preta(arv) && verifica_filho_vermelho_vermelho(arv) && verifica_caminho_folhas(arv));
 }
 
-void Finalizar(Arvore *arv)
+void finalizar(Arvore *arv)
 {
     if (arv == NULL)
         return;
