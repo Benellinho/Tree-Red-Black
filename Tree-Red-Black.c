@@ -27,7 +27,9 @@ static bool verifica_cor_aux(No *no);
 static bool verifica_cor_arvore(Arvore *arv);
 static bool verifica_raiz_preta(Arvore *arv);
 static bool verifica_nos_null(Arvore *arv);
+static bool verifica_filho_vermelho_vermelho_aux(No *no);
 static bool verifica_filho_vermelho_vermelho(Arvore *arv);
+static int verifica_caminho_aux(No *no);
 static bool verifica_caminho_folhas(Arvore *arv);
 
 static void imprime_nivel_arv_aux(No *no, int nivel);
@@ -456,17 +458,70 @@ static bool verifica_raiz_preta(Arvore *arv)
 
 static bool verifica_nos_null(Arvore *arv)
 {
-    return false;
+    if (arv == NULL)
+        return false;
+    
+    return true;
+}
+
+static bool verifica_filho_vermelho_vermelho_aux(No *no)
+{
+    if (no == NULL)
+        return true;
+
+    //Se o no eh vermelho
+    if (no->cor == 'R'){
+
+        //verifica filho esq vermelho
+        if (no->esquerda != NULL && no->esquerda->cor == 'R')
+            return false;
+
+        //verifica filho dir vermelho
+        if (no->direita != NULL && no->direita->cor == 'R')
+            return false;
+    }
+
+    return verifica_filho_vermelho_vermelho_aux(no->esquerda) && verifica_filho_vermelho_vermelho_aux(no->direita);
 }
 
 static bool verifica_filho_vermelho_vermelho(Arvore *arv)
 {
-    return false;
+    if (arv == NULL)
+        return false;
+
+    return verifica_filho_vermelho_vermelho_aux(arv->raiz);
+}
+
+static int verifica_caminho_aux(No *no)
+{
+    //NULL conta como no preto
+    if (no == NULL)
+        return 1; 
+
+    int caminho_esq = verifica_caminho_aux(no->esquerda);
+    int caminho_dir = verifica_caminho_aux(no->direita);
+
+    //se algum lado já deu errado
+    if (caminho_esq == 0 || caminho_dir == 0 )
+        return 0;
+
+    //caminhos devem ser iguais
+    if (caminho_esq != caminho_dir)
+        return 0;
+
+    //se o no eh preto, incrementa o caminho
+    if (no->cor == 'B')
+        return caminho_esq + 1; 
+
+    return caminho_esq;
 }
 
 static bool verifica_caminho_folhas(Arvore *arv)
 {
-    return false;
+    if (arv == NULL)
+        return false;
+
+    return verifica_caminho_aux(arv->raiz) != 0;
 }
 
 // Funções auxiliares para a impressão
